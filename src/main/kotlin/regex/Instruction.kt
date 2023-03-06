@@ -11,3 +11,7 @@ data class Jump(val to: Int) : Instruction
 data object Success : Instruction
 
 data object Failure : Instruction
+
+typealias RegexBytecode = List<Instruction>
+
+typealias MutableRegexBytecode = MutableList<Instruction>

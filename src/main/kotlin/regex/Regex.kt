@@ -1,6 +1,6 @@
 package regex
 
-class RegexVM(private val instructions: List<Instruction>) {
+class Regex(private val bytecode: RegexBytecode) {
     fun match(input: String): Boolean {
         return this.execute(input)
     }
@@ -22,7 +22,7 @@ class RegexVM(private val instructions: List<Instruction>) {
     ): Boolean {
         while (instructionStack.isNotEmpty()) {
             val (ip, cursor) = instructionStack.removeFirst()
-            when (val op = this.instructions[ip]) {
+            when (val op = this.bytecode[ip]) {
                 is Match -> {
                     if (cursor < str.length && str[cursor] == op.value) {
                         instructionStack.addFirst((ip + 1) to (cursor + 1))
@@ -40,5 +40,9 @@ class RegexVM(private val instructions: List<Instruction>) {
             }
         }
         return false
+    }
+
+    override fun toString(): String {
+        return this.bytecode.joinToString("\n")
     }
 }

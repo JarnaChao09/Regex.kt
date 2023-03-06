@@ -1,12 +1,31 @@
-import regex.RegexVM
+import regex.dsl.regex
+import regex.Regex
 import regex.Match
 import regex.Split
 import regex.Jump
 import regex.Success
-import regex.Failure
+import regex.dsl.oneOrMore
+import regex.dsl.zeroOrMore
 
 fun main() {
-    val matcher = RegexVM( // equivalent regex: a+b*
+    val ideal = regex {
+        oneOrMore {
+            +"a"
+        }
+        zeroOrMore {
+            +"b"
+        }
+    }
+
+    println(ideal) // should print
+                   // match 'a'
+                   // split 0, 2
+                   // split 3, 5
+                   // match 'b'
+                   // jump 2
+                   // success
+
+    val matcher = Regex( // equivalent regex: a+b*
         listOf(
             Match('a'),  // 0
             Split(0, 2), // 1
