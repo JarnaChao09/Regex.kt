@@ -33,5 +33,5 @@ fun main() {
     println("  bb: ${matcher.fullMatch("bb")}")   // false
     println(" abb: ${matcher.fullMatch("abb")}")  // true
     println(" aab: ${matcher.fullMatch("aab")}")  // true
-    println("aabc: ${matcher.fullMatch("aabc")}") // true
+    println("aabc: ${matcher.fullMatch("aabc")}") // false
 }
