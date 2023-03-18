@@ -1,6 +1,12 @@
 package regex
 
-class Regex(private val bytecode: RegexBytecode) {
+import regex.ast.Regexpression
+
+class Regexp(private val regexExpression: Regexpression) {
+    private val bytecode: RegexBytecode by lazy {
+        regexExpression.generateBytecode() + listOf(Success)
+    }
+
     fun match(input: String): Boolean {
         return this.execute(input)
     }
@@ -42,7 +48,16 @@ class Regex(private val bytecode: RegexBytecode) {
         return false
     }
 
-    override fun toString(): String {
-        return this.bytecode.joinToString("\n")
+    fun dumpBytecodeString(): String {
+        return this.bytecode.mapIndexed { i, instruction ->
+            val instructionString: String = when (instruction) {
+                is Jump -> "jump ${instruction.to}"
+                is Match -> "match '${instruction.value}'"
+                is Split -> "split ${instruction.continueAt}, ${instruction.jumpTo}"
+                Failure -> "failure"
+                Success -> "success"
+            }
+            "$i $instructionString"
+        }.joinToString(separator = "\n")
     }
 }

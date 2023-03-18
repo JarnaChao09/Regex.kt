@@ -1,14 +1,22 @@
-import regex.dsl.regex
-import regex.Regex
-import regex.Match
-import regex.Split
-import regex.Jump
-import regex.Success
+import regex.*
+import regex.ast.Literal
+import regex.ast.OneOrMore
+import regex.ast.ZeroOrMore
 import regex.dsl.oneOrMore
+import regex.dsl.regex
 import regex.dsl.zeroOrMore
 
 fun main() {
-    val ideal = regex {
+    val structure = Regexp(
+        OneOrMore(
+            Literal("a",),
+            next = ZeroOrMore(
+                Literal("b")
+            )
+        )
+    )
+
+    val dsl = regex {
         oneOrMore {
             +"a"
         }
@@ -17,40 +25,55 @@ fun main() {
         }
     }
 
-    println(ideal) // should print
-                   // match 'a'
-                   // split 0, 2
-                   // split 3, 5
-                   // match 'b'
-                   // jump 2
-                   // success
+    println(structure.dumpBytecodeString())
 
-    val matcher = Regex( // equivalent regex: a+b*
-        listOf(
-            Match('a'),  // 0
-            Split(0, 2), // 1
-            Split(3, 5), // 2
-            Match('b'),  // 3
-            Jump(2),     // 4
-            Success,     // 5
-        )
-    )
+    println()
+
+    println(dsl.dumpBytecodeString())
+
+    println()
+
+    // a+b*
+    // match 'a'
+    // split 0, 2
+    // split 3, 5
+    // match 'b'
+    // jump 2
+    // success
 
     println("match:")
-    println("  aa: ${matcher.match("aa")}")   // true
-    println("  ab: ${matcher.match("ab")}")   // true
-    println("  bb: ${matcher.match("bb")}")   // false
-    println(" abb: ${matcher.match("abb")}")  // true
-    println(" aab: ${matcher.match("aab")}")  // true
-    println("aabc: ${matcher.match("aabc")}") // true
+    println("\tstructure:")
+    println("\t\t  aa: ${structure.match("aa")}")   // true
+    println("\t\t  ab: ${structure.match("ab")}")   // true
+    println("\t\t  bb: ${structure.match("bb")}")   // false
+    println("\t\t abb: ${structure.match("abb")}")  // true
+    println("\t\t aab: ${structure.match("aab")}")  // true
+    println("\t\taabc: ${structure.match("aabc")}") // true
+
+    println("\tdsl:")
+    println("\t\t  aa: ${dsl.match("aa")}")   // true
+    println("\t\t  ab: ${dsl.match("ab")}")   // true
+    println("\t\t  bb: ${dsl.match("bb")}")   // false
+    println("\t\t abb: ${dsl.match("abb")}")  // true
+    println("\t\t aab: ${dsl.match("aab")}")  // true
+    println("\t\taabc: ${dsl.match("aabc")}") // true
 
     println()
 
     println("full match:")
-    println("  aa: ${matcher.fullMatch("aa")}")   // true
-    println("  ab: ${matcher.fullMatch("ab")}")   // true
-    println("  bb: ${matcher.fullMatch("bb")}")   // false
-    println(" abb: ${matcher.fullMatch("abb")}")  // true
-    println(" aab: ${matcher.fullMatch("aab")}")  // true
-    println("aabc: ${matcher.fullMatch("aabc")}") // false
+    println("\tstructure:")
+    println("\t\t  aa: ${structure.fullMatch("aa")}")   // true
+    println("\t\t  ab: ${structure.fullMatch("ab")}")   // true
+    println("\t\t  bb: ${structure.fullMatch("bb")}")   // false
+    println("\t\t abb: ${structure.fullMatch("abb")}")  // true
+    println("\t\t aab: ${structure.fullMatch("aab")}")  // true
+    println("\t\taabc: ${structure.fullMatch("aabc")}") // false
+
+    println("\tdsl:")
+    println("\t\t  aa: ${dsl.fullMatch("aa")}")   // true
+    println("\t\t  ab: ${dsl.fullMatch("ab")}")   // true
+    println("\t\t  bb: ${dsl.fullMatch("bb")}")   // false
+    println("\t\t abb: ${dsl.fullMatch("abb")}")  // true
+    println("\t\t aab: ${dsl.fullMatch("aab")}")  // true
+    println("\t\taabc: ${dsl.fullMatch("aabc")}") // false
 }
