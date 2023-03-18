@@ -1,26 +1,47 @@
 package regex.dsl
 
-import regex.Regex
+import regex.Regexp
+import regex.ast.Literal
+import regex.ast.OneOrMore
+import regex.ast.Regexpression
+import regex.ast.ZeroOrMore
 
 @RegexMarker
-open class RegexScope internal constructor() {
+open class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     operator fun String.unaryPlus() {
-        TODO()
+        this@RegexScope.body.add(Literal(this@unaryPlus))
+    }
+
+    operator fun Regexpression.unaryPlus() {
+        this@RegexScope.body.add(this@unaryPlus.deepCopy())
+    }
+
+    open fun build(): Regexpression {
+        val ret = this.body[0]
+
+        this.body.reduce { acc, next ->
+            acc.next = next
+            next
+        }
+
+        return ret
     }
 }
 
-class ZeroOrMoreScope : RegexScope()
-
-fun RegexScope.zeroOrMore(block: ZeroOrMoreScope.() -> Unit) {
-    TODO()
+class ZeroOrMoreScope : RegexScope() {
+    override fun build(): Regexpression = ZeroOrMore(super.build())
 }
 
-class OneOrMoreScope() : RegexScope()
-
-fun RegexScope.oneOrMore(block: OneOrMoreScope.() -> Unit) {
-    TODO()
+inline fun RegexScope.zeroOrMore(crossinline block: ZeroOrMoreScope.() -> Unit) {
+    this.body.add(ZeroOrMoreScope().apply(block).build())
 }
 
-fun regex(block: RegexScope.() -> Unit): Regex {
-    TODO()
+class OneOrMoreScope : RegexScope() {
+    override fun build(): Regexpression = OneOrMore(super.build())
 }
+
+inline fun RegexScope.oneOrMore(crossinline block: OneOrMoreScope.() -> Unit) {
+    this.body.add(OneOrMoreScope().apply(block).build())
+}
+
+inline fun regex(crossinline block: RegexScope.() -> Unit): Regexp = Regexp(RegexScope().apply(block).build())
