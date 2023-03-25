@@ -20,6 +20,7 @@ fun main() {
         oneOrMore {
             +"a"
         }
+        +"c"
         zeroOrMore {
             +"b"
         }
@@ -30,6 +31,8 @@ fun main() {
     println()
 
     println(dsl.dumpBytecodeString())
+
+    println(dsl.generateRegexString())
 
     println()
 

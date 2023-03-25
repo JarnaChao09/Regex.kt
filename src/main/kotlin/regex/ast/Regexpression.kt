@@ -27,6 +27,9 @@ data class Literal(val value: String, override var next: Regexpression? = null) 
             this@Literal.value.forEach {
                 add(Match(it))
             }
+            this@Literal.next?.let {
+                addAll(it.generateBytecode(this@buildList.size + offset))
+            }
         }
     }
 }

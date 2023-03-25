@@ -60,4 +60,6 @@ class Regexp(private val regexExpression: Regexpression) {
             "$i $instructionString"
         }.joinToString(separator = "\n")
     }
+
+    fun generateRegexString(): String = this.regexExpression.generateRegexString()
 }
