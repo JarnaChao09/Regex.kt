@@ -20,16 +20,19 @@ fun main() {
         oneOrMore {
             +"a"
         }
+        +"c"
         zeroOrMore {
             +"b"
         }
     }
 
-    println(structure)
+    println(structure.dumpBytecodeString())
 
     println()
 
-    println(dsl)
+    println(dsl.dumpBytecodeString())
+
+    println(dsl.generateRegexString())
 
     println()
 
