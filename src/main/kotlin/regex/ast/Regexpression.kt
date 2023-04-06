@@ -48,7 +48,7 @@ data class ZeroOrMore(val expression: Regexpression, override var next: Regexpre
             addAll(expr1)
             add(Jump(offset))
             this@ZeroOrMore.next?.let {
-                addAll(it.generateBytecode(this@buildList.size))
+                addAll(it.generateBytecode(this@buildList.size + offset))
             }
         }
     }
@@ -67,7 +67,7 @@ data class OneOrMore(val expression: Regexpression, override var next: Regexpres
             addAll(expr1)
             add(Split(offset, expr1.size + 1 + offset))
             this@OneOrMore.next?.let {
-                addAll(it.generateBytecode(this@buildList.size))
+                addAll(it.generateBytecode(this@buildList.size + offset))
             }
         }
     }
