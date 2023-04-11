@@ -43,7 +43,7 @@ data class ZeroOrMore(val expression: Regexpression, override var next: Regexpre
 
     override fun generateBytecode(offset: Int): RegexBytecode {
         return buildList {
-            val expr1 = this@ZeroOrMore.expression.generateBytecode()
+            val expr1 = this@ZeroOrMore.expression.generateBytecode(1 + offset)
             add(Split(1 + offset, expr1.size + 2 + offset))
             addAll(expr1)
             add(Jump(offset))
@@ -63,7 +63,7 @@ data class OneOrMore(val expression: Regexpression, override var next: Regexpres
 
     override fun generateBytecode(offset: Int): RegexBytecode {
         return buildList {
-            val expr1 = this@OneOrMore.expression.generateBytecode()
+            val expr1 = this@OneOrMore.expression.generateBytecode(offset)
             addAll(expr1)
             add(Split(offset, expr1.size + 1 + offset))
             this@OneOrMore.next?.let {
