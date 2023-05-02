@@ -18,7 +18,7 @@ sealed interface Regexpression {
 
 data class Literal(val value: String, override var next: Regexpression? = null) : Regexpression {
     override val isSingleCharacter: Boolean
-        get() = this.value.length == 1
+        get() = this.next == null && this.value.length == 1
 
     override fun generateRegexString(): String {
         return "$value${this.next?.generateRegexString() ?: ""}"
