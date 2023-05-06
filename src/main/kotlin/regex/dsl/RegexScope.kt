@@ -4,7 +4,7 @@ import regex.Regexp
 import regex.ast.*
 
 @RegexMarker
-open class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
+class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     operator fun String.unaryPlus() {
         this@RegexScope.body.add(Literal(this@unaryPlus))
     }
