@@ -7,7 +7,7 @@ import regex.ast.Regexpression
 import regex.ast.ZeroOrMore
 
 @RegexMarker
-open class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
+class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     operator fun String.unaryPlus() {
         this@RegexScope.body.add(Literal(this@unaryPlus))
     }
@@ -28,20 +28,12 @@ open class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     }
 }
 
-class ZeroOrMoreScope : RegexScope() {
-    override fun build(): Regexpression = ZeroOrMore(super.build())
+inline fun RegexScope.zeroOrMore(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(ZeroOrMore(RegexScope().apply(block).build()))
 }
 
-inline fun RegexScope.zeroOrMore(crossinline block: ZeroOrMoreScope.() -> Unit) {
-    this.body.add(ZeroOrMoreScope().apply(block).build())
-}
-
-class OneOrMoreScope : RegexScope() {
-    override fun build(): Regexpression = OneOrMore(super.build())
-}
-
-inline fun RegexScope.oneOrMore(crossinline block: OneOrMoreScope.() -> Unit) {
-    this.body.add(OneOrMoreScope().apply(block).build())
+inline fun RegexScope.oneOrMore(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(OneOrMore(RegexScope().apply(block).build()))
 }
 
 inline fun regex(crossinline block: RegexScope.() -> Unit): Regexp = Regexp(RegexScope().apply(block).build())
