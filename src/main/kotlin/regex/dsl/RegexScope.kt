@@ -13,7 +13,7 @@ class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
         this@RegexScope.body.add(this@unaryPlus.deepCopy())
     }
 
-    open fun build(): Regexpression {
+    fun build(): Regexpression {
         val ret = this.body[0]
 
         this.body.reduce { acc, next ->
