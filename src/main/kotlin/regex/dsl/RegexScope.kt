@@ -25,36 +25,20 @@ open class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     }
 }
 
-class ZeroOrMoreScope : RegexScope() {
-    override fun build(): Regexpression = ZeroOrMore(super.build())
+inline fun RegexScope.zeroOrMore(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(ZeroOrMore(RegexScope().apply(block).build()))
 }
 
-inline fun RegexScope.zeroOrMore(crossinline block: ZeroOrMoreScope.() -> Unit) {
-    this.body.add(ZeroOrMoreScope().apply(block).build())
+inline fun RegexScope.oneOrMore(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(OneOrMore(RegexScope().apply(block).build()))
 }
 
-class OneOrMoreScope : RegexScope() {
-    override fun build(): Regexpression = OneOrMore(super.build())
+inline fun RegexScope.optional(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(Optional(RegexScope().apply(block).build()))
 }
 
-inline fun RegexScope.oneOrMore(crossinline block: OneOrMoreScope.() -> Unit) {
-    this.body.add(OneOrMoreScope().apply(block).build())
-}
-
-class OptionalScope : RegexScope() {
-    override fun build(): Regexpression = Optional(super.build())
-}
-
-inline fun RegexScope.optional(crossinline block: OptionalScope.() -> Unit) {
-    this.body.add(OptionalScope().apply(block).build())
-}
-
-class AlterationScope : RegexScope() {
-    override fun build(): Regexpression = Alteration(this.body.toList())
-}
-
-inline fun RegexScope.alteration(crossinline block: AlterationScope.() -> Unit) {
-    this.body.add(AlterationScope().apply(block).build())
+inline fun RegexScope.alteration(crossinline block: RegexScope.() -> Unit) {
+    this.body.add(Alteration(RegexScope().apply(block).body.toList()))
 }
 
 inline fun regex(crossinline block: RegexScope.() -> Unit): Regexp = Regexp(RegexScope().apply(block).build())
