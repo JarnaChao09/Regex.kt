@@ -28,12 +28,12 @@ class RegexScope(val body: MutableList<Regexpression> = mutableListOf()) {
     }
 }
 
-inline fun RegexScope.zeroOrMore(crossinline block: RegexScope.() -> Unit) {
+fun RegexScope.zeroOrMore(block: RegexScope.() -> Unit) {
     this.body.add(ZeroOrMore(RegexScope().apply(block).build()))
 }
 
-inline fun RegexScope.oneOrMore(crossinline block: RegexScope.() -> Unit) {
+fun RegexScope.oneOrMore(block: RegexScope.() -> Unit) {
     this.body.add(OneOrMore(RegexScope().apply(block).build()))
 }
 
-inline fun regex(crossinline block: RegexScope.() -> Unit): Regexp = Regexp(RegexScope().apply(block).build())
+fun regex(block: RegexScope.() -> Unit): Regexp = Regexp(RegexScope().apply(block).build())
