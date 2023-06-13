@@ -9,9 +9,12 @@ import regex.dsl.zeroOrMore
 fun main() {
     val structure = Regexp(
         OneOrMore(
-            Literal("a",),
-            next = ZeroOrMore(
-                Literal("b")
+            Literal("a"),
+            next = Literal(
+                "c",
+                next = ZeroOrMore(
+                    Literal("b")
+                )
             )
         )
     )
@@ -27,6 +30,8 @@ fun main() {
     }
 
     println(structure.dumpBytecodeString())
+
+    println(structure.generateRegexString())
 
     println()
 
