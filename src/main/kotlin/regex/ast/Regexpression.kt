@@ -72,3 +72,16 @@ data class OneOrMore(val expression: Regexpression, override var next: Regexpres
         }
     }
 }
+
+/**
+ * Functional alternative to Regexpression::generateRegexString
+ */
+fun Regexpression.prettyPrint(): String {
+    return "${
+        when (this) {
+            is Literal -> this.value
+            is OneOrMore -> "(?:${this.expression.prettyPrint()})+"
+            is ZeroOrMore -> "(?:${this.expression.prettyPrint()})*"
+        }
+    }${this.next?.prettyPrint() ?: ""}"
+}
